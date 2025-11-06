@@ -1,5 +1,5 @@
 import React, { JSX, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom"; // ✅ Removed BrowserRouter here
 import LoginPage from "./pages/LoginPage";
 import PatientRecords from "./pages/PatientRecords";
 import SpecialistSearch from "./pages/SpecialistSearch";
@@ -8,7 +8,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminDoctorRequests from "./pages/AdminDoctorRequests";
 import PatientDashboard from "./pages/PatientDashboard";
 import { useCognitoCallback } from "./hooks/useCognitoCallback";
-
 
 export type User = {
   id: string;
@@ -49,67 +48,59 @@ const App: React.FC = () => {
     );
   };
 
-  const currentUserId = localStorage.getItem("userId");
-  // const currentUser = users.find((u) => u.id === currentUserId);
-
   return (
-    <>
-      
-     
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
 
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-
-        <Route
-          path="/patient-profile"
-          element={
-            <ProtectedRoute allowedRoles={["Patient"]}>
-              <PatientDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/patient-records"
-          element={
-            <ProtectedRoute allowedRoles={["Patient"]}>
-              <PatientRecords />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/specialist-search"
-          element={
-            <ProtectedRoute allowedRoles={["Patient"]}>
-              <SpecialistSearch />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/doctor-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["Doctor"]}>
-              <DoctorDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["Administrator"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin-doctor-requests"
-          element={
-            <ProtectedRoute allowedRoles={["Administrator"]}>
-              <AdminDoctorRequests users={users} onUpdateUserRole={handleUpdateUserRole} />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </>
+      <Route
+        path="/patient-profile"
+        element={
+          <ProtectedRoute allowedRoles={["Patient"]}>
+            <PatientDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/patient-records"
+        element={
+          <ProtectedRoute allowedRoles={["Patient"]}>
+            <PatientRecords />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/specialist-search"
+        element={
+          <ProtectedRoute allowedRoles={["Patient"]}>
+            <SpecialistSearch />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/doctor-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["Doctor"]}>
+            <DoctorDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["Administrator"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin-doctor-requests"
+        element={
+          <ProtectedRoute allowedRoles={["Administrator"]}>
+            <AdminDoctorRequests users={users} onUpdateUserRole={handleUpdateUserRole} />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 };
 

@@ -2,8 +2,13 @@ import React from "react";
 
 const LoginPage: React.FC = () => {
   // ✅ Your verified, working Cognito login link
-  const COGNITO_LOGIN_URL =
-    "https://eu-north-1ct1pyvv7u.auth.eu-north-1.amazoncognito.com/login?client_id=6jleg52bmn4lclibreb9vs5tm8&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fd84l1y8p4kdic.cloudfront.net%2F";
+  // const COGNITO_LOGIN_URL =
+  //   "https://eu-north-1ct1pyvv7u.auth.eu-north-1.amazoncognito.com/login?client_id=6jleg52bmn4lclibreb9vs5tm8&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fd84l1y8p4kdic.cloudfront.net%2F";
+   
+   
+ const COGNITO_LOGIN_URL =
+  "https://eu-north-1ct1pyvv7u.auth.eu-north-1.amazoncognito.com/login?client_id=6jleg52bmn4lclibreb9vs5tm8&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fd11rr8edee9tbbb.cloudfront.net";
+
 
   const handleLogin = () => {
     window.location.href = COGNITO_LOGIN_URL; // just redirect to hosted UI

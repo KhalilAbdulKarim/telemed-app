@@ -128,49 +128,77 @@ import {
   TextField,
   Button,
   Box,
-  MenuItem,
   Snackbar,
+  CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const roles = ['Patient', 'Doctor', 'Administrator'] as const;
-type Role = typeof roles[number];
+type Role = 'Patient' | 'Doctor' | 'Administrator';
+
+interface MockUser {
+  username: string;
+  password: string;
+  role: Role;
+}
+
+const mockUsers: MockUser[] = [
+  { username: 'patient1', password: '1234', role: 'Patient' },
+  { username: 'doctor1', password: 'abcd', role: 'Doctor' },
+  { username: 'admin1', password: 'admin', role: 'Administrator' },
+];
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<Role | ''>('');
   const [snack, setSnack] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); // react-router-dom v6
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (!username || !password || !role) {
+  const handleLogin = async () => {
+    if (!username || !password) {
       setSnack('Please fill all fields');
       return;
     }
 
-    // Save user info in localStorage (simulate login)
-    localStorage.setItem('role', role);
-    localStorage.setItem('username', username);
-    localStorage.setItem('userId', username); // for simplicity, use username as id
+    setLoading(true);
 
-    setSnack(`Logged in as ${role}`);
-
-    // Redirect based on role
+    // 🔹 Simulate network delay
     setTimeout(() => {
-      switch (role) {
-        case 'Patient':
-          navigate('/patient-profile');
-          break;
-        case 'Doctor':
-          navigate('/doctor-dashboard');
-          break;
-        case 'Administrator':
-          navigate('/admin-dashboard');
-          break;
+      const user = mockUsers.find(
+        (u) => u.username === username && u.password === password
+      );
+
+      if (!user) {
+        setSnack('Invalid username or password');
+        setLoading(false);
+        return;
       }
-    }, 500);
+
+      // Save demo session
+      localStorage.setItem('username', user.username);
+      localStorage.setItem('userId', user.username);
+      localStorage.setItem('role', user.role);
+
+      setSnack(`Welcome ${user.username} (${user.role})`);
+
+      // Redirect based on role
+      setTimeout(() => {
+        switch (user.role) {
+          case 'Patient':
+            navigate('/patient-profile');
+            break;
+          case 'Doctor':
+            navigate('/doctor-dashboard');
+            break;
+          case 'Administrator':
+            navigate('/admin-dashboard');
+            break;
+        }
+      }, 800);
+
+      setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -193,23 +221,22 @@ const LoginPage: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
         />
-        <TextField
-          select
-          label="Role"
-          value={role}
-          onChange={(e) => setRole(e.target.value as Role)}
-          fullWidth
-        >
-          {roles.map((r) => (
-            <MenuItem key={r} value={r}>
-              {r}
-            </MenuItem>
-          ))}
-        </TextField>
 
-        <Button variant="contained" fullWidth onClick={handleLogin}>
-          Login
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
         </Button>
+
+        <Typography variant="body2" color="text.secondary" textAlign="center">
+          <strong>Demo Accounts:</strong><br />
+          Patient → patient1 / 1234<br />
+          Doctor → doctor1 / abcd<br />
+          Admin → admin1 / admin
+        </Typography>
       </Box>
 
       <Snackbar

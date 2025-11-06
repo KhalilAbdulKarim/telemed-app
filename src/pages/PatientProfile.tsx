@@ -24,7 +24,7 @@ const PatientProfile: React.FC<Props> = ({ user, onRequestDoctor }) => {
   return (
     <Box>
       <Typography variant="h6">Username: {user.username}</Typography>
-      <Typography variant="body1">Role: {user.role}</Typography>
+      {/* <Typography variant="body1">Role: {user.role}</Typography> */}
 
       {user.role === 'Patient' && !user.doctorRequest && (
         <Box sx={{ mt: 2 }}>

@@ -1,13 +1,27 @@
-import React, { JSX } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useCognitoAuth } from "./hooks/useCognitoAuth";
+import React, { JSX, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import PatientDashboard from "./pages/PatientDashboard";
 import PatientRecords from "./pages/PatientRecords";
 import SpecialistSearch from "./pages/SpecialistSearch";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminDoctorRequests from "./pages/AdminDoctorRequests";
+import PatientDashboard from "./pages/PatientDashboard";
+import { useCognitoCallback } from "./hooks/useCognitoCallback";
 
+
+export type User = {
+  id: string;
+  username: string;
+  role: "Patient" | "Doctor" | "Administrator";
+  doctorRequest?: boolean;
+};
+
+const initialUsers: User[] = [
+  { id: "1", username: "Alice", role: "Patient" },
+  { id: "2", username: "Bob", role: "Patient" },
+  { id: "3", username: "Admin", role: "Administrator" },
+];
 
 const ProtectedRoute = ({
   children,
@@ -22,17 +36,32 @@ const ProtectedRoute = ({
 };
 
 const App: React.FC = () => {
-  useCognitoAuth(); // handle token & redirect
+  useCognitoCallback();
+  const [users, setUsers] = useState<User[]>(initialUsers);
+
+  const handleUpdateUserRole = (id: string, newRole: "Patient" | "Doctor") => {
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === id
+          ? { ...u, role: newRole, doctorRequest: newRole === "Patient" ? false : undefined }
+          : u
+      )
+    );
+  };
+
+  const currentUserId = localStorage.getItem("userId");
+  const currentUser = users.find((u) => u.id === currentUserId);
 
   return (
-    <Router>
+    <>
+      
+     
+
       <Routes>
-        {/* Login / Root */}
         <Route path="/" element={<LoginPage />} />
 
-        {/* Patient Routes */}
         <Route
-          path="/patient-dashboard"
+          path="/patient-profile"
           element={
             <ProtectedRoute allowedRoles={["Patient"]}>
               <PatientDashboard />
@@ -55,8 +84,6 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Doctor Routes */}
         <Route
           path="/doctor-dashboard"
           element={
@@ -65,8 +92,6 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Admin Routes */}
         <Route
           path="/admin-dashboard"
           element={
@@ -75,16 +100,16 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path="/admin-doctor-requests"
           element={
             <ProtectedRoute allowedRoles={["Administrator"]}>
-              <AdminDoctorRequests />
+              <AdminDoctorRequests users={users} onUpdateUserRole={handleUpdateUserRole} />
             </ProtectedRoute>
           }
-        /> */}
+        />
       </Routes>
-    </Router>
+    </>
   );
 };
 

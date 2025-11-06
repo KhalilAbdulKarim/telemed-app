@@ -50,7 +50,7 @@ const App: React.FC = () => {
   };
 
   const currentUserId = localStorage.getItem("userId");
-  const currentUser = users.find((u) => u.id === currentUserId);
+  // const currentUser = users.find((u) => u.id === currentUserId);
 
   return (
     <>

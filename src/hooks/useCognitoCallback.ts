@@ -138,13 +138,13 @@ export const useCognitoCallback = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    if (!code) return; // no Cognito redirect code, stop here
+    if (!code) return;
 
     const clientId = "6jleg52bmn4lclibreb9vs5tm8";
     const redirectUri =
       window.location.hostname.includes("localhost")
         ? "http://localhost:3000/"
-        : "https://d11rr8edee9tbbb.cloudfront.net/"; // ✅ your new CloudFront domain
+        : "https://d11rr8edee9tbbb.cloudfront.net/";
 
     const tokenUrl =
       "https://eu-north-1ct1pyvv7u.auth.eu-north-1.amazoncognito.com/oauth2/token";
